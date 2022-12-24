@@ -1,0 +1,25 @@
+name: Specs
+
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby: ['2.7', '3.0', '3.1' ]
+    name: Ruby ${{ matrix.ruby }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - name: Install dependencies
+        run: |
+          gem install bundler --force --version=2.3.26
+          bundler --version
+          bundle install --jobs 4 --retry 3 --deployment
+      - name: Specs
+        run: bundle exec rake spec
