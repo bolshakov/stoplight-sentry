@@ -20,6 +20,7 @@ jobs:
         run: |
           gem install bundler --force --version=2.3.26
           bundler --version
-          bundle install --jobs 4 --retry 3 --deployment
+          bundle config set --local deployment 'true'
+          bundle install
       - name: Specs
         run: bundle exec rake spec
