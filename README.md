@@ -1,6 +1,6 @@
 # Stoplight::Sentry
 
-Sentry notifier for Stoplight.
+Sentry notifier for [Stoplight].
 
 ## Installation
 
@@ -55,3 +55,4 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/bolsha
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
 [sentry-ruby]: https://github.com/getsentry/sentry-ruby
+[Stoplight]: https://github.com/bolshakov/stoplight
