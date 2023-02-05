@@ -6,7 +6,7 @@ RSpec.describe Stoplight::Sentry::Notifier do
   subject(:notify) { notifier.notify(light, from_color, to_color, error) }
 
   let(:notifier) { described_class.new(sentry, formatter, **options) }
-  let(:sentry) { class_double(Sentry) }
+  let(:sentry) { Sentry }
   let(:light) { instance_double(Stoplight::Light, name: "light-name") }
   let(:from_color) { Stoplight::Color::GREEN }
   let(:to_color) { Stoplight::Color::RED }
@@ -23,7 +23,7 @@ RSpec.describe Stoplight::Sentry::Notifier do
     end
 
     it "notifies sentry" do
-      expect(sentry).to receive(:capture_message).with(message, backtrace: backtrace)
+      expect(sentry).to receive(:capture_message).with(message, backtrace: backtrace).and_call_original
 
       expect(notify).to eq(message)
     end
@@ -33,6 +33,7 @@ RSpec.describe Stoplight::Sentry::Notifier do
 
       it "notifies sentry" do
         expect(sentry).to receive(:capture_message).with(message, backtrace: backtrace, tags: { foo: "bar" })
+          .and_call_original
 
         expect(notify).to eq(message)
       end

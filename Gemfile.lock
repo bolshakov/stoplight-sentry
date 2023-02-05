@@ -2,8 +2,8 @@ PATH
   remote: .
   specs:
     stoplight-sentry (0.1.0)
-      sentry-ruby (~> 5.7)
-      stoplight (~> 3.0)
+      sentry-ruby (>= 4.9, < 6.0)
+      stoplight (>= 3.0)
 
 GEM
   remote: https://rubygems.org/
@@ -69,6 +69,7 @@ DEPENDENCIES
   rspec (~> 3.0)
   rubocop (~> 1.21)
   ruby_coding_standard (= 0.4.0)
+  sentry-ruby
   stoplight-sentry!
 
 BUNDLED WITH
