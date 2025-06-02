@@ -1,0 +1,43 @@
+name: 🚦Stoplight
+
+on:
+  pull_request:
+  push:
+    branches: [ master ]
+
+jobs:
+  rubocop:
+    name: Standard 👮
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Standard Ruby
+        uses: "standardrb/standard-ruby-action@v1"
+        with:
+          autofix: false
+
+  spec:
+    name: Specs on Ruby ${{ matrix.ruby }}, Sentry ${{ matrix.sentry }} 💚
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby: [ '3.2', '3.3', '3.4' ]
+        sentry: ['~> 4.9', '~> 5.7', '']
+    env:
+      SENTRY_VERSION: ${{ matrix.sentry }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+
+      - name: Run Tests
+        run: bundle exec rake spec
