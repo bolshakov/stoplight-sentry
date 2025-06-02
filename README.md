@@ -27,7 +27,7 @@ require 'sentry-ruby'
 
 notifier = Stoplight::Sentry::Notifier.new(Sentry)
 # => #<Stoplight::Sentry::Notifier:...>
-Stoplight::Light.default_notifiers += [notifier]
+Stoplight.default_notifiers += [notifier]
 # => [#<Stoplight::Notifier::IO:...>, #<Stoplight::Sentry::Notifier:...>]
 ```
 
@@ -36,7 +36,7 @@ you can configure notifier to add custom option to the notification:
 ```ruby
 notifier = Stoplight::Sentry::Notifier.new(Sentry, tags: {foo: 'bar'})
 # => #<Stoplight::Sentry::Notifier:...>
-Stoplight::Light.default_notifiers += [notifier]
+Stoplight.default_notifiers += [notifier]
 # => [#<Stoplight::Notifier::IO:...>, #<Stoplight::Sentry::Notifier:...>]
 ```
 
