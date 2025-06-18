@@ -20,11 +20,8 @@ Gem::Specification.new do |spec|
 
   spec.files = ["LICENSE.txt", "README.md"] +
     Dir.glob(File.join("lib", "**", "*.rb"))
-  spec.test_files = Dir.glob(File.join("spec", "**", "*.rb"))
   spec.require_paths = ["lib"]
 
   spec.add_dependency "stoplight", ">= 4.0"
   spec.add_dependency "sentry-ruby", ">= 5", "< 6.0"
-
-  spec.add_development_dependency "ruby_coding_standard", "0.4.0"
 end

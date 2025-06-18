@@ -29,10 +29,10 @@ RSpec.describe Stoplight::Sentry::Notifier do
     end
 
     context "with custom options" do
-      let(:options) { { tags: { foo: "bar" }} }
+      let(:options) { {tags: {foo: "bar"}} }
 
       it "notifies sentry" do
-        expect(sentry).to receive(:capture_message).with(message, backtrace: backtrace, tags: { foo: "bar" })
+        expect(sentry).to receive(:capture_message).with(message, backtrace: backtrace, tags: {foo: "bar"})
           .and_call_original
 
         expect(notify).to eq(message)
@@ -51,10 +51,10 @@ RSpec.describe Stoplight::Sentry::Notifier do
     end
 
     context "with custom options" do
-      let(:options) { { tags: { foo: "bar" }} }
+      let(:options) { {tags: {foo: "bar"}} }
 
       it "notifies sentry" do
-        expect(sentry).to receive(:capture_message).with(message, backtrace: backtrace, tags: { foo: "bar" })
+        expect(sentry).to receive(:capture_message).with(message, backtrace: backtrace, tags: {foo: "bar"})
 
         expect(notify).to eq(message)
       end

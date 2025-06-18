@@ -35,7 +35,7 @@ module Stoplight
       # @param error []StandardError]
       # @return [String]
       def notify(light, from_color, to_color, error)
-        formatter.(light, from_color, to_color, error).tap do |message|
+        formatter.call(light, from_color, to_color, error).tap do |message|
           options.merge(backtrace: error&.backtrace).then do |sentry_options|
             sentry.capture_message(message, **sentry_options)
           end

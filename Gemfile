@@ -9,7 +9,7 @@ gem "rake", "~> 13.0"
 
 gem "rspec", "~> 3.0"
 
-gem "rubocop", "~> 1.21"
+gem "standard"
 
 sentry_version = ENV.fetch("SENTRY_VERSION", "latest")
 if sentry_version == "latest"
