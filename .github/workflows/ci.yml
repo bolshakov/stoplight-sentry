@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+  schedule:
+    - cron: '5 4 * * *'
+
+jobs:
+  lint:
+    name: Standard 👮
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Standard Ruby
+        uses: "standardrb/standard-ruby-action@v1"
+        with:
+          autofix: false
+
+  specs:
+    name: Ruby ${{ matrix.ruby }}, Sentry ${{ matrix.sentry }}💚
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: ['3.2', '3.3', '3.4' ]
+        sentry: ['~> 5.25', 'latest']
+    env:
+      SENTRY_VERSION: ${{ matrix.sentry }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - name: Install dependencies
+        run: bundle install
+      - name: Specs
+        run: bundle exec rake spec
