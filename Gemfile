@@ -11,8 +11,8 @@ gem "rspec", "~> 3.0"
 
 gem "rubocop", "~> 1.21"
 
-sentry_version = ENV.fetch("SENTRY_VERSION", "")
-if sentry_version == ""
+sentry_version = ENV.fetch("SENTRY_VERSION", "latest")
+if sentry_version == "latest"
   gem "sentry-ruby"
 else
   gem "sentry-ruby", sentry_version
