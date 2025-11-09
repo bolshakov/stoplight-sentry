@@ -19,9 +19,8 @@ else
   gem "sentry-ruby", sentry_version
 end
 
-
 stoplight_version = ENV.fetch("STOPLIGHT_VERSION", "latest")
-if sentry_version == "latest"
+if stoplight_version == "latest"
   gem "stoplight"
 else
   gem "stoplight", stoplight_version
