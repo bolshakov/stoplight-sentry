@@ -1,7 +1,9 @@
 name: CI
 
 on:
+  pull_request:
   push:
+    branches: [ main ]
   schedule:
     - cron: '5 4 * * *'
 
@@ -21,15 +23,17 @@ jobs:
           autofix: false
 
   specs:
-    name: Ruby ${{ matrix.ruby }}, Sentry ${{ matrix.sentry }}💚
+    name: Ruby ${{ matrix.ruby }}, Sentry ${{ matrix.sentry }}, Stoplight ${{ matrix.stoplight }}💚
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         ruby: ['3.2', '3.3', '3.4' ]
         sentry: ['~> 5.25', 'latest']
+        stoplight: ["~> 4.1", "~> 5", "latest"]
     env:
       SENTRY_VERSION: ${{ matrix.sentry }}
+      STOPLIGHT_VERSION: ${{ matrix.stoplight }}
 
     steps:
       - uses: actions/checkout@v3
