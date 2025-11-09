@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    stoplight-sentry (0.2.0)
+    stoplight-sentry (1.0.0)
       sentry-ruby (>= 5)
       stoplight (>= 5)
 
