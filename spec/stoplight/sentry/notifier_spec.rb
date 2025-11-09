@@ -1,41 +1,68 @@
 # frozen_string_literal: true
 
 require "securerandom"
+require "timecop"
+
+class MockStoplight
+  def initialize
+    @calls = []
+  end
+
+  def capture_message(message, **options)
+    @calls.push([message, options])
+  end
+
+  def last_notification
+    @calls.last
+  end
+end
 
 RSpec.describe Stoplight::Sentry::Notifier do
-  subject(:notify) { notifier.notify(light, from_color, to_color, error) }
-
   let(:notifier) { described_class.new(sentry, formatter, **options) }
-  let(:sentry) { Sentry }
-  let(:light) { instance_double(Stoplight::Light, name: "light-name") }
-  let(:from_color) { Stoplight::Color::GREEN }
-  let(:to_color) { Stoplight::Color::RED }
-  let(:error) { StandardError.new("something went wrong").tap { _1.set_backtrace(backtrace) } }
-  let(:backtrace) { ["foo", "bar"] }
+  let(:sentry) { MockStoplight.new }
+  let(:light) { Stoplight(name, threshold: 1, notifiers: [notifier], cool_off_time:) }
+  let(:name) { SecureRandom.uuid }
   let(:options) { {} }
+  let(:error) { RuntimeError.new("bang!") }
+  let(:cool_off_time) { 60 }
 
   context "when formatter is provided" do
-    let(:formatter) { instance_double(Proc) }
-    let(:message) { SecureRandom.uuid }
-
-    before do
-      expect(formatter).to receive(:call).with(light, from_color, to_color, error) { message }
-    end
+    let(:formatter) { ->(config, from_color, to_color, error) { [config, from_color, to_color, error] } }
 
     it "notifies sentry" do
-      expect(sentry).to receive(:capture_message).with(message, backtrace: backtrace).and_call_original
+      light.run(->(_) {}) { raise error }
 
-      expect(notify).to eq(message)
+      expect(sentry.last_notification).to eq(
+        [
+          [light.config, "green", "red", error],
+          {backtrace: error.backtrace}
+        ]
+      )
+
+      Timecop.travel(Time.now + cool_off_time + 1) do
+        light.run {}
+      end
+
+      expect(sentry.last_notification).to eq(
+        [
+          [light.config, "yellow", "green", nil],
+          {backtrace: nil}
+        ]
+      )
     end
 
     context "with custom options" do
       let(:options) { {tags: {foo: "bar"}} }
 
       it "notifies sentry" do
-        expect(sentry).to receive(:capture_message).with(message, backtrace: backtrace, tags: {foo: "bar"})
-          .and_call_original
+        light.run(->(_) {}) { raise error }
 
-        expect(notify).to eq(message)
+        expect(sentry.last_notification).to eq(
+          [
+            [light.config, "green", "red", error],
+            {backtrace: error.backtrace, tags: {foo: "bar"}}
+          ]
+        )
       end
     end
   end
@@ -45,18 +72,39 @@ RSpec.describe Stoplight::Sentry::Notifier do
     let(:message) { "Switching light-name from green to red because StandardError something went wrong" }
 
     it "notifies sentry" do
-      expect(sentry).to receive(:capture_message).with(message, backtrace: backtrace)
+      light.run(->(_) {}) { raise error }
 
-      notify
+      expect(sentry.last_notification).to eq(
+        [
+          "Switching #{name} from green to red because RuntimeError bang!",
+          {backtrace: error.backtrace}
+        ]
+      )
+
+      Timecop.travel(Time.now + cool_off_time + 1) do
+        light.run {}
+      end
+
+      expect(sentry.last_notification).to eq(
+        [
+          "Switching #{name} from yellow to green",
+          {backtrace: nil}
+        ]
+      )
     end
 
     context "with custom options" do
       let(:options) { {tags: {foo: "bar"}} }
 
       it "notifies sentry" do
-        expect(sentry).to receive(:capture_message).with(message, backtrace: backtrace, tags: {foo: "bar"})
+        light.run(->(_) {}) { raise error }
 
-        expect(notify).to eq(message)
+        expect(sentry.last_notification).to eq(
+          [
+            "Switching #{name} from green to red because RuntimeError bang!",
+            {backtrace: error.backtrace, tags: {foo: "bar"}}
+          ]
+        )
       end
     end
   end

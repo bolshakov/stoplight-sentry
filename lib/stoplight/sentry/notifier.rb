@@ -20,12 +20,19 @@ module Stoplight
       #   @return [Hash]
       attr_reader :options
 
+      DEFAULT_FORMATTER = lambda do |light, from_color, to_color, error|
+        words = ["Switching", light.name, "from", from_color, "to", to_color]
+        words += ["because", error.class, error.message] if error
+        words.join(" ")
+      end
+      private_constant :DEFAULT_FORMATTER
+
       # @param sentry [::Sentry]
-      # @param formatter [Proc, nil] (Stoplight::Default::FORMATTER)
+      # @param formatter [Proc, nil]
       # @param options [Hash] custom options for the +Sentry#capture_message+ method
       def initialize(sentry, formatter = nil, **options)
         @sentry = sentry
-        @formatter = formatter || Stoplight::Default::FORMATTER
+        @formatter = formatter || DEFAULT_FORMATTER
         @options = options
       end
 
