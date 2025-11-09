@@ -25,7 +25,7 @@ module Stoplight
       # @param options [Hash] custom options for the +Sentry#capture_message+ method
       def initialize(sentry, formatter = nil, **options)
         @sentry = sentry
-        @formatter = formatter || Stoplight::Default::FORMATTER
+        @formatter = formatter || Stoplight::Wiring::Default::FORMATTER
         @options = options
       end
 
