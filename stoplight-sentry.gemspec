@@ -22,6 +22,6 @@ Gem::Specification.new do |spec|
     Dir.glob(File.join("lib", "**", "*.rb"))
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "stoplight", ">= 4.0"
+  spec.add_dependency "stoplight", ">= 5.0"
   spec.add_dependency "sentry-ruby", ">= 5"
 end
