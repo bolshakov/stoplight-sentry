@@ -23,5 +23,5 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "stoplight", ">= 4.0"
-  spec.add_dependency "sentry-ruby", ">= 5", "< 6.0"
+  spec.add_dependency "sentry-ruby", ">= 5"
 end
